@@ -1,0 +1,89 @@
+clientConfig.PLUGINS_CONFIG['justiren-routefilter'] = {
+    pluginLayers: ['itinerari.routefilter_itinerari_odp','servizi_raccolta_pdr.routefilter_itinerari_pdr'],
+    pluginDOMElements: [
+        {
+            type:'div',
+            id: 'map-toolbar-justiren-routefilter',
+            parent: 'map-toolbars',
+            class: ['olToolbarsControl']
+        }
+    ],
+    pluginComponents: ['gisclient-maps_justiren-routefilter:JUSTIren-RouteFilter_Control:1:itools','gisclient-maps_justiren-routefilter:JUSTIren-RouteFilter_Functions:99:zhidden'],
+    pluginClientConfig: {
+        JUSTIREN_ROUTEFILTER_ROUTE_DISPLAY_FIELDS: [],
+        JUSTIREN_ROUTEFILTER_SPAZZAMENTO_LAYERS_SEARCH: [],
+        JUSTIREN_ROUTEFILTER_SPAZZAMENTO_FIELDS_SEARCH: [],
+        JUSTIREN_ROUTEFILTER_SPAZZAMENTO_FREQUENCY_RELATION: '',
+        JUSTIREN_ROUTEFILTER_SPAZZAMENTO_FREQUENCY_RELATION_FIELD: '',
+        JUSTIREN_ROUTEFILTER_SPAZZAMENTO_FREQUENCY_RELATION_FIELD_LABEL: '',
+        JUSTIREN_ROUTEFILTER_HIGHLIGHT_COLOR: '#FFA500',
+        JUSTIREN_ROUTEFILTER_HIGHLIGHT_WIDTH : 5,
+        JUSTIREN_ROUTEFILTER_HIGHLIGHT_MAXSCALE : 500000,
+        JUSTIREN_ROUTEFILTER_HIGHLIGHT_MINSCALE : 2000,
+        JUSTIREN_ROUTEFILTER_TREE_LAYERS_ENABLE: [],
+        JUSTIREN_ROUTEFILTER_TREE_LAYERS_DISABLE: [],
+        JUSTIREN_ROUTEFILTER_SPAZZAMENTO_LAYERS: {
+            COUNT_FEATURES_TOTAL:[
+                {
+                    FIELD: 'count',
+                    LABEL: 'Numero Oggetti Pulizia',
+                    LAYERS: []
+                }
+            ],
+            COUNT_FEATURES_BYLAYER: [],
+            COUNT_FIELDS_TOTAL: [
+                {
+                    FIELD: '',
+                    LABEL: '',
+                    FORMAT: ''
+                }
+            ],
+            COUNT_FIELDS_BYLAYER: [],
+            TREE_LAYERS_ENABLE: [],
+            TREE_LAYERS_DISABLE: [],
+            LAYERS: {
+                "layer_name" : {
+                    SEARCH_FIELD: null,
+                    SEARCH_RELATION: "",
+                    FILTER_FIELD: "",
+                    DISPLAY_FIELDS: {
+                        color: '#AA7819',
+                        minscale: '15000'
+                    },
+                    FILTER_LAYERS: []
+                },
+            }
+        },
+        JUSTIREN_ROUTEFILTER_RACCOLTA_LAYERS_SEARCH: [],
+        JUSTIREN_ROUTEFILTER_RACCOLTA_FIELDS_SEARCH: [],
+        JUSTIREN_ROUTEFILTER_RACCOLTA_FREQUENCY_RELATION: '',
+        JUSTIREN_ROUTEFILTER_RACCOLTA_FREQUENCY_RELATION_FIELD: '',
+        JUSTIREN_ROUTEFILTER_RACCOLTA_FREQUENCY_RELATION_FIELD_LABEL: '',
+        JUSTIREN_ROUTEFILTER_RACCOLTA_LAYERS: {
+            COUNT_FEATURES_TOTAL:[
+                {
+                    FIELD: 'count',
+                    LABEL: 'Numero PDR',
+                    LAYERS: []
+                }
+            ],
+            COUNT_FEATURES_BYLAYER: [],
+            COUNT_FIELDS_TOTAL: [
+            ],
+            COUNT_FIELDS_BYLAYER: [],
+            TREE_LAYERS_ENABLE: [],
+            TREE_LAYERS_DISABLE: [],
+            LAYERS: {
+                "layer_mame" : {
+                    SEARCH_FIELD: null,
+                    SEARCH_RELATION: null,
+                    FILTER_FIELD: "",
+                    DISPLAY_FIELDS: {
+                    },
+                    FILTER_LAYERS: [
+                    ]
+                }
+            }
+        },
+    }
+}
