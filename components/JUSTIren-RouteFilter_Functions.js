@@ -2,174 +2,7 @@
 //********************************************************************************************
 //**** Plugin for GEOweb - JUSTIren - Filter layers belonging to a single route
 //********************************************************************************************
-/*
-window.GCComponents.Functions.modEEDisplayCircuit = function (featureObj, panelElement) {
-    if (clientConfig.MOD_EE_CIRCUIT_FIELD_ID == null) {
-        return;
-    }
-    var eeId = featureObj.attributes[clientConfig.MOD_EE_CIRCUIT_FIELD_ID];
-    if (eeId == null) {
-        return;
-    }
-    var eeLabel = featureObj.attributes[clientConfig.MOD_EE_CIRCUIT_FIELD_LABEL];
-    if (eeLabel == null) {
-        eeLabel = eeId;
-    }
-    if (panelElement.innerHTML == 'N.A.') {
-        panelElement.innerHTML = '';
-    }
-    panelElement.innerHTML += '<section class="justiren-routefilter_freq-section"><h1>Circuito</h1>'+eeLabel+'<a href="#" id="justiren-routefilter_filter_'+featureObj.id+'" filterid="'+eeId+'"><span class="icon-filter"></span></a><a href="#" id="justiren-routefilter_hilglight_'+featureObj.id+'" filterid="'+eeId+'"><span class="icon-highlight"></span></a></section>';
-    $('#justiren-routefilter_hilglight_'+featureObj.id).click(function(event) {
-        event.stopPropagation();
-        var filterId = this.getAttribute('filterid');
-        window.GCComponents.Functions.modEEHighlight(featureObj.featureTypeName,clientConfig.MOD_EE_CIRCUIT_FIELD_ID,filterId,'layer-ee_freq-highlight');
-    });
-    $('#justiren-routefilter_filter_'+featureObj.id).click(function(event) {
-        event.stopPropagation();
-        var filterId = this.getAttribute('filterid');
-        window.GCComponents.Functions.modEEFilter(featureObj.featureTypeName,clientConfig.MOD_EE_CIRCUIT_FIELD_ID,filterId);
-    });
-}
 
-window.GCComponents.Functions.modEEDisplaySection = function (featureObj, panelElement) {
-    if (clientConfig.MOD_EE_SECTION_FIELD_ID == null) {
-        return;
-    }
-    var eeId = featureObj.attributes[clientConfig.MOD_EE_SECTION_FIELD_ID];
-    if (eeId == null) {
-        return;
-    }
-    if (clientConfig.MOD_EE_SECTION_LAYER == null) {
-        var eeLabel = featureObj.attributes[clientConfig.MOD_EE_SECTION_FIELD_LABEL];
-        if (eeLabel == null) {
-            eeLabel = eeId;
-        }
-        if (panelElement.innerHTML == 'N.A.') {
-            panelElement.innerHTML = '';
-        }
-        panelElement.innerHTML += '<section class="justiren-routefilter_freq-section"><h1>Sezione</h1>'+eeLabel+'<a href="#" id="justiren-routefilter_section_filter_'+featureObj.id+'" filterid="'+eeId+'"><span class="icon-filter"></span></a><a href="#" id="justiren-routefilter_section_hilglight_'+featureObj.id+'" filterid="'+eeId+'"><span class="icon-highlight"></span></a></section>';
-        $('#justiren-routefilter_hilglight_'+featureObj.id).click(function(event) {
-            event.stopPropagation();
-            var filterId = this.getAttribute('filterid');
-            window.GCComponents.Functions.modEEHighlight(featureObj.featureTypeName,clientConfig.MOD_EE_CIRCUIT_FIELD_ID,filterId,'layer-ee_freq-highlight');
-        });
-        $('#justiren-routefilter_filter_'+featureObj.id).click(function(event) {
-            event.stopPropagation();
-            var filterId = this.getAttribute('filterid');
-            window.GCComponents.Functions.modEEFilter(featureObj.featureTypeName,clientConfig.MOD_EE_CIRCUIT_FIELD_ID,filterId);
-        });
-        $('#justiren-routefilter_section_hilglight_'+featureObj.id).click(function(event) {
-            event.stopPropagation();
-            var filterId = this.getAttribute('filterid');
-            window.GCComponents.Functions.modEEHighlight(featureObj.featureTypeName,clientConfig.MOD_EE_SECTION_FIELD_ID,filterId,'layer-ee_section-highlight');
-        });
-        $('#justiren-routefilter_section_filter_'+featureObj.id).click(function(event) {
-            event.stopPropagation();
-            var filterId = this.getAttribute('filterid');
-            window.GCComponents.Functions.modEEFilter(featureObj.featureTypeName,clientConfig.MOD_EE_SECTION_FIELD_ID,filterId);
-        });
-    }
-}
-
-window.GCComponents.Functions.modEEDisplaySubstationCircuits = function (featureObj, panelElement) {
-    if (clientConfig.MOD_EE_CIRCUIT_FIELD_ID == null) {
-        return;
-    }
-    var freqLabel = clientConfig.MOD_EE_SUBSTATION_CIRCUIT_FIELD_LABEL == null ? clientConfig.MOD_EE_CIRCUIT_FIELD_LABEL : clientConfig.MOD_EE_SUBSTATION_CIRCUIT_FIELD_LABEL;
-    var fType = GisClientMap.getFeatureType(featureObj.featureTypeName);
-    if(!fType) return alert('Errore: il featureType '+featureType+' non esiste');
-
-    var len = fType.properties.length, property, i, pkey, parentData={};
-
-    for(i = 0; i < len; i++) {
-        property = fType.properties[i];
-        if(property.isPrimaryKey) {
-            pkey = property.name;
-            break;
-        }
-    }
-
-    if(!featureObj.attributes[pkey]) {
-        return alert('Errore: la feature selezionata non ha un valore per la primary key '+pkey);
-    }
-
-    var params = {
-        projectName: GisClientMap.projectName,
-        mapsetName: GisClientMap.mapsetName,
-        srid: GisClientMap.map.projection,
-        featureType: featureObj.featureTypeName,
-        featureId: featureObj.attributes[pkey],
-        relationName: clientConfig.MOD_EE_SUBSTATION_CIRCUIT_RELATION,
-        action: 'viewdetails'
-    };
-
-    $.ajax({
-        url: clientConfig.GISCLIENT_URL + '/services/xMapQuery.php',
-        method: 'POST',
-        dataType: 'json',
-        data: params,
-        beforeSend:function(jqXHR){
-            jqXHR.featureType=featureObj.featureTypeName;
-        },
-        success: function(response, textStatus, jqXHR) {
-            if(!response || typeof(response) != 'object') {
-                return alert('Errore di sistema');
-
-            }
-            if(!response.length) {
-
-                return;
-            }
-            var len = response.length, result, i, fieldsHTML = '';
-            for(i = 0; i < len; i++) {
-                result = response[i];
-                var eeId = result[clientConfig.MOD_EE_CIRCUIT_FIELD_ID];
-                if (eeId == null) {
-                    continue;
-                }
-                var eeLabel = result[freqLabel];
-                if (eeLabel == null) {
-                    eeLabel = eeId;
-                }
-                if (panelElement.innerHTML == 'N.A.') {
-                    panelElement.innerHTML = '';
-                }
-                panelElement.innerHTML += '<section class="justiren-routefilter_freq-section">'+eeLabel+'<a href="#" id="justiren-routefilter_hilglight_'+featureObj.id+eeId+'" class="justiren-routefilter_substation_hilglight_'+featureObj.id+'" filterid="'+eeId+'"><span class="icon-highlight"></span></a></section>';
-            }
-
-            parentData['featureType'] = jqXHR.featureType;
-            for (var j=0; j<clientConfig.MOD_EE_SUBSTATION_DISPLAY_FIELDS.length; j++) {
-                parentData[clientConfig.MOD_EE_SUBSTATION_DISPLAY_FIELDS[j]] = result[clientConfig.MOD_EE_SUBSTATION_DISPLAY_FIELDS[j]];
-            }
-
-            $('.justiren-routefilter_substation_hilglight_'+featureObj.id).click(function(event) {
-                event.stopPropagation();
-                var filterField = [];
-                var filterValue = [];
-                var filterOp = [];
-                if ($(this).hasClass('justiren-routefilter_substation-freq-selected')) {
-                    $(this).removeClass('justiren-routefilter_substation-freq-selected');
-                }
-                else {
-                    $(this).addClass('justiren-routefilter_substation-freq-selected');
-                }
-                $('.justiren-routefilter_substation_hilglight_'+featureObj.id).each(function(idx,elem){
-                    if ($(this).hasClass('justiren-routefilter_substation-freq-selected')) {
-                        filterField.push(clientConfig.MOD_EE_CIRCUIT_FIELD_ID);
-                        filterValue.push(this.getAttribute('filterid'));
-                        filterOp.push('=');
-                    }
-                });
-
-                window.GCComponents.Functions.modEEHighlight(clientConfig.MOD_EE_LINE_LAYERS,filterField,filterValue,'layer-ee_freq-highlight',filterOp,null,'OR',parentData);
-            });
-        },
-        error: function() {
-
-        }
-    });
-}
-*/
 window.GCComponents.Functions.JUSTIrenRouteFilterSearchPanel = function (objLayers, arrSearchLayers, arrFields, searchFunction, formTitle, relationName1n, fieldName1n, fieldLabel1n) {
     if (typeof(searchFunction) != 'function' || typeof(objLayers) != 'object' || typeof(arrSearchLayers) != 'object' || typeof(arrFields) != 'object') {
         alert ('Parametri non corretti, impossibile aprire il pannello di ricerca');
@@ -668,21 +501,7 @@ window.GCComponents.Functions.JUSTIrenRouteFilterExecute = function(objLayers, i
                             feature = new OpenLayers.Feature.Vector(geometry, result);
                             feature.featureTypeName = jqXHR.featureType;
                             features.push(feature);
-                            /*
-                            // **** Calculate Bounding Box
-                            var geometries = new OpenLayers.Geometry.Collection();
-                            if (window.GCComponents.Data.JUSTIrenRouteFilter.bboxGeom != null) {
-                                geometries.addComponent(window.GCComponents.Data.JUSTIrenRouteFilter.bboxGeom);
-                            }
-                            geometry = result.gc_geom && OpenLayers.Geometry.fromWKT(result.gc_geom);
-                            if(!geometry) continue;
-                            geometries.addComponent(geometry);
-                            geometries.calculateBounds();
-                            if (GisClientMap.map.getMaxExtent().containsBounds(geometries.bounds)) {
-                                window.GCComponents.Data.JUSTIrenRouteFilter.bboxGeom = geometries.bounds.toGeometry();
-                            }
-                            geometries.destroy();
-                            */
+
                             if (result.hasOwnProperty(idField)) {
                                 if (idList.indexOf(result[idField]) < 0) {
                                     idList.push(result[idField]);
@@ -912,7 +731,6 @@ window.GCComponents.Functions.JUSTIrenRouteFilterPanel = function (config) {
                 circDisplay = 'block';
             }
             $('#justiren-routefilter_panel_'+freqID).css('display', circDisplay);
-            //window.GCComponents.Functions.switchCircuitColor(layer,layer.freqsList[freqID].freq_color,freqID);
         }
         else {
             $("#justiren-routefilter_panel_content a").removeClass("olControlItemActive");
@@ -923,6 +741,7 @@ window.GCComponents.Functions.JUSTIrenRouteFilterPanel = function (config) {
     });
     $('#justiren-routefilter_panel').css('display', 'block');
 };
+
 window.GCComponents.Functions.JUSTIrenRouteFilterClear = function() {
     window.GCComponents.Functions.JUSTIrenRouteFilterSet(window.GCComponents.Data.JUSTIrenRouteFilter.filterLayers);
     window.GCComponents.Functions.JUSTIrenRouteFilterPanel();
@@ -935,163 +754,6 @@ window.GCComponents.Functions.JUSTIrenRouteFilterClear = function() {
     highlightLayer.redraw();
     window.GCComponents.Functions.JUSTIrenRouteFilterToggleLayers(clientConfig.JUSTIREN_ROUTEFILTER_TREE_LAYERS_ENABLE, clientConfig.JUSTIREN_ROUTEFILTER_TREE_LAYERS_DISABLE);
 }
-/*
-    var loadingControl = GisClientMap.map.getControlsByClass('OpenLayers.Control.LoadingPanel')[0];
-    loadingControl.maximizeControl();
-    //GisClientMap.map.getLayersByName('layer-ee_freq-highlight')[0].destroyFeatures();
-    //GisClientMap.map.getLayersByName('layer-ee_section-highlight')[0].destroyFeatures();
-    GisClientMap.map.getLayersByName('layer-ee_pod-highlight')[0].dataTable = [];
-    GisClientMap.map.getLayersByName('layer-ee_pod-highlight')[0].freqsList = {};
-    GisClientMap.map.getLayersByName('layer-ee_pod-highlight')[0].parentData = {};
-    GisClientMap.map.getLayersByName('layer-ee_pod-highlight')[0].destroyFeatures(null,{silent:true});
-
-    var selectPod = GisClientMap.map.getControlsBy('gc_id', 'control-justiren-routefilter-selectpod')[0];
-    selectPod.deactivate();
-
-    window.GCComponents.Functions.modEESectionsPanel(null);
-
-    var eeLayers = clientConfig.MOD_EE_LINE_LAYERS.concat(clientConfig.MOD_EE_SUBSTATION_LAYERS);
-    var eeLayersStr = eeLayers.join();
-    var params = {
-        featureType: eeLayersStr,
-        projectName : GisClientMap.projectName,
-        mapsetName : GisClientMap.mapsetName,
-        action: 'set'
-    };
-    $.ajax({
-        url: clientConfig.GISCLIENT_URL + '/services/gcFilterLayer.php',
-        method: 'POST',
-        dataType: 'json',
-        data: params,
-        success: function(response) {
-            if(!response || typeof(response) != 'object') {
-                return alert('Errore di sistema');
-                loadingControl.minimizeControl();
-            }
-            // **** Relod filtered layers
-            var queryToolbarControl = GisClientMap.map.getControlsBy('gc_id', 'control-querytoolbar')[0];
-            for (var i=0; i<eeLayers.length; i++) {
-                var fLayer = queryToolbarControl.getLayerFromFeature(eeLayers[i]);
-                fLayer.redraw();
-            }
-
-            loadingControl.minimizeControl();
-        },
-        error: function() {
-            loadingControl.minimizeControl();
-        }
-    });
-
-}
-
-window.GCComponents.Functions.modEEShowRelation = function (featureType, dataTable, relationName) {
-    var fType = GisClientMap.getFeatureType(featureType),
-        len = fType.properties.length, i, property,
-        table = '<table id="ee-rel-table"><thead><tr>',
-        exportLinks = ' <a href="#" class="reportTbl_export podTbl_export" action="xls"><img src="../../resources/themes/icons/xls.gif">&nbsp;Esporta in Excel</a>'
-                    + ' <a href="#" class="reportTbl_export podTbl_export" action="pdf" ><img src="../../resources/themes/icons/acrobat.gif">&nbsp;Esporta in PDF</a>',
-        data = [], fields = [], tmpArr, col, j,
-        result, value, title;
-    var eeRelContent = exportLinks + ' <div id="ee-rel-content"></div>';
-    var selectControls = GisClientMap.map.getControlsBy('gc_id', 'control-querytoolbar');
-    for(i = 0; i < len; i++) {
-        property = fType.properties[i];
-
-        if(property.relationName == relationName || clientConfig.MOD_EE_POD_DISPLAY_FIELDS.indexOf(property.name) >= 0) {
-            fields.push({field_name:property.name,
-                         title:property.header,
-                         type:property.fieldType,
-                         format:typeof(property.fieldFormat) != 'undefined'?property.fieldFormat:null
-                        });
-            title = property.header || property.name;
-            table += '<th>'+title+'</th>';
-        }
-    }
-    table += '</tr></thead><tbody>';
-
-    for(i = 0; i < dataTable.length; i++) {
-        result = dataTable[i];
-        tmpArr = {};
-        table += '<tr>';
-        for(j = 0; j < fields.length; j++) {
-            col = fields[j];
-            if (!result.hasOwnProperty(col.field_name)) {
-                alert ('Errore in definizione relazione POD; impossibile visualizzare la tabella dei risultati');
-                return;
-            }
-            value = result[col.field_name] || '';
-            tmpArr [col.field_name] = value;
-
-            if (selectControls.length != 1) {
-                table += '<td>'+value+'</td>';
-            }
-            else {
-                table += '<td>'+selectControls[0].writeDataAttribute(col.type, value, col.format)+'</td>';
-            }
-        }
-        data.push(tmpArr);
-        table += '</tr>';
-    }
-    table += '</tbody></table>';
-
-    $('#DetailsWindow div.modal-body').css('overflow', 'visible');
-    $('#DetailsWindow div.modal-body').html(eeRelContent);
-    $('#ee-rel-content').css('height', $('#map').height()-120);
-    $('#ee-rel-content').css('overflow', 'auto');
-    $('#ee-rel-content').html(table);
-    $('#DetailsWindow h4.modal-title').html('Tabella POD');
-    $('.podTbl_export').click(function() {
-        var action = this.getAttribute('action');
-        window.GCComponents.Functions.modEEexportRelation(fields, data, action);
-    });
-
-    $('#DetailsWindow').modal('show');
-}
-
-window.GCComponents.Functions.modEEexportRelation = function(fields, data, action) {
-    var params = {
-        export_format: action,
-        data: data,
-        fields: fields
-    };
-
-    var request = OpenLayers.Request.POST({
-        url: GisClientMap.baseUrl + '/services/export.php',
-        data: JSON.stringify(params),
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        callback: function(response) {
-                var fmt = action;
-                if(!response || typeof(response) != 'object' || !response.status || response.status != 200) {
-                    return alert('Errore di sistema');
-                }
-
-                if (!response.responseText) {
-                    return alert('Nessun file generato, errore non previsto');
-                }
-
-                var responseObj = JSON.parse(response.responseText);
-
-                if (!responseObj.result || responseObj.result != 'ok') {
-                    var errMessage = 'Errore in generazione file';
-                    if (responseObj.error)
-                        errMessage += ' - Dettagli: ' + responseObj.error;
-                    return alert (errMessage);
-                }
-
-                if (fmt == 'xls') {
-                    window.location.assign(responseObj.file);
-                }
-                else {
-                    var win = window.open(responseObj.file, '_blank');
-                    win.focus();
-                }
-        },
-        scope: this
-    });
-}
-*/
 
 window.GCComponents.InitFunctions.JUSTIrenRouteFilterInit = function() {
     if (!window.GCComponents.hasOwnProperty('Data')) {
